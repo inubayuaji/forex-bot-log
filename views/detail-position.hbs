@@ -1,0 +1,94 @@
+<div class="container">
+  <div class="card mb-4">
+    <div class="card-header">
+      Order Detail
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm" x-data="detailPosition()">
+          <thead>
+            <tr>
+              <th scope="col">Ticket</th>
+              <th scope="col">Symbol</th>
+              <th scope="col">Type</th>
+              <th scope="col">Size</th>
+              <th scope="col">Open Time</th>
+              <th scope="col">Open Price</th>
+              <th scope="col">Close Time</th>
+              <th scope="col">Close Price</th>
+              <th scope="col">Swap</th>
+              <th scope="col">Profit</th>
+              <th scope="col">Comment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td x-text="position.ticket"></td>
+              <td x-text="position.symbol"></td>
+              <td x-text="position.type"></td>
+              <td x-text="position.size"></td>
+              <td x-text="position.openTime"></td>
+              <td x-text="position.openPrice"></td>
+              <td x-text="position.closeTime"></td>
+              <td x-text="position.closePrice"></td>
+              <td x-text="priceFormater(position.swap)"></td>
+              <td x-text="priceFormaterposition.profit)"></td>
+              <td x-text="position.comment"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      Order Modify
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm" x-data="detailPosition()">
+          <thead>
+            <tr>
+              <th scope="col">Time</th>
+              <th scope="col">Stop Loss</th>
+              <th scope="col">Take Profit</th>
+              <th scope="col">Comment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="modify in position.modifications">
+              <tr>
+                <td x-text="modify.time"></td>
+                <td x-text="modify.detail.stopLoss"></td>
+                <td x-text="modify.detail.takeProfit"></td>
+                <td x-text="modify.detail.comment"></td>
+              </tr>
+            </template>
+            </tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{#section 'script'}}
+<script>
+  function detailPosition() {
+    return {
+      position: [],
+      priceFormater(value) {
+        return "$" + value;
+      },
+      init() {
+        var _this = this;
+
+        axios.get('/api/position/' + {{ ticket }}).then((res) => {
+          _this.position = res.data;
+        });
+      }
+    }
+  }
+</script>
+{{/section}}

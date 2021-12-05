@@ -1,0 +1,68 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      Open Position
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm" x-data="openPosition()">
+          <thead>
+            <tr>
+              <th scope="col">Ticket</th>
+              <th scope="col">Symbol</th>
+              <th scope="col">Type</th>
+              <th scope="col">Size</th>
+              <th scope="col">Open Time</th>
+              <th scope="col">Open Price</th>
+              <th scope="col">Close Time</th>
+              <th scope="col">Close Price</th>
+              <th scope="col">Swap</th>
+              <th scope="col">Profit</th>
+              <th scope="col">Comment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="position in positions">
+              <tr>
+                <td><a :href="linkHandler(position.ticket)" x-text="position.ticket"></a></td>
+                <td x-text="position.symbol"></td>
+                <td x-text="position.type"></td>
+                <td x-text="position.size"></td>
+                <td x-text="position.openTime"></td>
+                <td x-text="position.openPrice"></td>
+                <td x-text="position.closeTime"></td>
+                <td x-text="position.closePrice"></td>
+                <td x-text="priceFormater(position.swap)"></td>
+                <td x-text="priceFormater(position.profit)"></td>
+                <td x-text="position.comment"></td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{#section 'script'}}
+<script>
+  function openPosition() {
+    return {
+      positions: [],
+      priceFormater(value) {
+        return "$" + value;
+      },
+      linkHandler(ticket) {
+        return "/position/" + ticket;
+      },
+      init() {
+        var _this = this;
+
+        axios.get('/api/position?closed=false').then((res) => {
+          _this.positions = res.data;
+        });
+      }
+    }
+  }
+</script>
+{{/section}}
